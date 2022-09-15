@@ -4,10 +4,3 @@ declare module '*.vue' {
   const component: DefineComponent<{}, {}, any>
   export default component
 }
-
-export { }
-declare module 'vue' {
-  interface ComponentCustomProperties {
-    $store: any
-  }
-}
