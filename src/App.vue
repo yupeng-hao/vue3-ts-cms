@@ -6,6 +6,20 @@
     <router-view></router-view>
     <el-button>按钮</el-button>
     <el-input></el-input>
+    <el-form :inline="true" class="demo-form-inline">
+      <el-form-item label="Approved by">
+        <el-input placeholder="Approved by" />
+      </el-form-item>
+      <el-form-item label="Activity zone">
+        <el-select placeholder="Activity zone">
+          <el-option label="Zone one" value="shanghai" />
+          <el-option label="Zone two" value="beijing" />
+        </el-select>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary">Query</el-button>
+      </el-form-item>
+    </el-form>
   </div>
 </template>
 
