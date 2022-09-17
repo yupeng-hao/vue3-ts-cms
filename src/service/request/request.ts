@@ -1,9 +1,8 @@
 import axios from 'axios'
 import type { MYRequestConfig, MYRequestInterceptors } from './type'
-import type { AxiosInstance, AxiosRequestConfig } from 'axios'
+import type { AxiosInstance } from 'axios'
 import { ElLoading } from 'element-plus'
 import type { LoadingInstance } from 'element-plus/es/components/loading/src/loading'
-import { throwError } from 'element-plus/es/utils'
 
 const DEFAULT_LOADING = true
 
@@ -14,10 +13,12 @@ class MYRequest {
   showLoading: boolean
 
   constructor(config: MYRequestConfig) {
+    // 创建axios实例
     this.instance = axios.create(config)
+    // 保存基本信息
     this.interceptors = config.interceptors
     this.showLoading = config.showLoading ?? DEFAULT_LOADING
-
+    // 从config中取出的拦截器是对应实例的拦截器
     this.instance.interceptors.request.use(
       this.interceptors?.requestInterceptor,
       this.interceptors?.requestInterceptorCatch
@@ -56,29 +57,59 @@ class MYRequest {
       }
     )
   }
-  request(config: MYRequestConfig): void {
-    if (config.interceptors?.requestInterceptor) {
-      config = config.interceptors.requestInterceptor(config)
-    }
+  request<T>(config: MYRequestConfig<T>): Promise<T> {
+    return new Promise((resolve, reject) => {
+      if (config.interceptors?.requestInterceptor) {
+        config = config.interceptors.requestInterceptor(config)
+      }
 
-    if (config.showLoading === false) {
-      this.showLoading = config.showLoading
-    }
+      if (config.showLoading === false) {
+        this.showLoading = config.showLoading
+      }
 
-    this.instance
-      .request(config)
-      .then((res) => {
-        if (config.interceptors?.responseInterceptor) {
-          res = config.interceptors.responseInterceptor(res)
-        }
-        // 重置showloading的值
-        this.showLoading = DEFAULT_LOADING
-        console.log(res)
-      })
-      .catch((err) => {
-        this.showLoading = DEFAULT_LOADING
-        return err
-      })
+      this.instance
+        .request<any, T>(config)
+        .then((res) => {
+          if (config.interceptors?.responseInterceptor) {
+            res = config.interceptors.responseInterceptor(res)
+          }
+          // 重置showloading的值
+          this.showLoading = DEFAULT_LOADING
+          resolve(res)
+        })
+        .catch((err) => {
+          this.showLoading = DEFAULT_LOADING
+          reject(err)
+          return err
+        })
+    })
+  }
+
+  get<T>(config: MYRequestConfig<T>): Promise<T> {
+    return this.request<T>({
+      ...config,
+      method: 'GET'
+    })
+  }
+
+  post<T>(config: MYRequestConfig<T>): Promise<T> {
+    return this.request<T>({
+      ...config,
+      method: 'POST'
+    })
+  }
+
+  delete<T>(config: MYRequestConfig<T>): Promise<T> {
+    return this.request<T>({
+      ...config,
+      method: 'DELETE'
+    })
+  }
+  patch<T>(config: MYRequestConfig<T>): Promise<T> {
+    return this.request<T>({
+      ...config,
+      method: 'PATCH'
+    })
   }
 }
 
