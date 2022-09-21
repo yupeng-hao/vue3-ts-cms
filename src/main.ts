@@ -6,6 +6,7 @@ import 'normalize.css'
 import './assets/css/index.less'
 // 引入字体图标
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
+import { setupStore } from './store'
 
 // import { globalRegister } from './global'
 
@@ -23,6 +24,7 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 // app.use(globalRegister)
 app.use(store)
 app.use(router)
+setupStore()
 app.mount('#app')
 
 interface DataType {
