@@ -48,8 +48,16 @@ const loginModule: Module<ILoginState, IRootState> = {
       // 请求用户菜单
       const userMenusResult = await userRoleMenusApi(userInfo.role.id)
       const userMenusInfo = userMenusResult.data
+      // element-plus中的ICON图标使用改变，新增plusIcon属性
+      userMenusInfo.map((item: any) => {
+        item.icon = item.icon.slice(8)
+        item.plusIcon = item.icon.split('-').join('')
+        if (item.plusIcon === 'chatlineround') {
+          item.plusIcon = 'ChatLineRound'
+        }
+      })
       commit('changeRoleMenus', userMenusInfo)
-      localCache.setCache('roleMenus', userMenusInfo)
+      localCache.setCache('userMenus', userMenusInfo)
 
       // 跳转首页
       router.push('/main')
@@ -63,11 +71,11 @@ const loginModule: Module<ILoginState, IRootState> = {
         commit('changeToken', token)
       }
       const userInfo = localCache.getCache('userInfo')
-      if (token) {
+      if (userInfo) {
         commit('changeUserInfo', userInfo)
       }
       const userMenus = localCache.getCache('userMenus')
-      if (token) {
+      if (userMenus) {
         commit('changeRoleMenus', userMenus)
       }
     }
