@@ -4,6 +4,10 @@
       <el-icon v-if="!isFold" class="fold"><Fold /></el-icon>
       <el-icon v-else class="expand"><Expand /></el-icon>
     </div>
+    <div class="content">
+      <div>面包屑</div>
+      <div>用户信息</div>
+    </div>
   </div>
 </template>
 
@@ -28,6 +32,8 @@ export default defineComponent({
 
 <style lang="less" scoped>
 .navHeader {
+  display: flex;
+  width: 100%;
   .fold {
     font-size: 30px;
     cursor: pointer;
@@ -35,6 +41,13 @@ export default defineComponent({
   .expand {
     font-size: 30px;
     cursor: pointer;
+  }
+  .content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex: 1;
+    margin-left: 15px;
   }
 }
 </style>
